@@ -17,6 +17,7 @@ def get_raw_contracts(symbol):
     raw = pd.json_normalize(requests.get(url=options_endpoint, params=options_payload).json())  # get raw option data
 
     price = raw['underlyingPrice'][0]  # gets underlying stock price
+    price = 23.95
 
     # Remove all columns related to the underlying stock, leaving only cells containing tables of each contract
     del raw['symbol']
@@ -71,7 +72,7 @@ def get_raw_contracts(symbol):
     index_length = len(option_list.index) - 1
     # calculate market days to expiration; includes today and expiration date
     for index in range(0, index_length):
-        option_chain.at[index, 'marketDaysToExpiration'] = np.busday_count(np.datetime64('today', 'D'),
+        option_chain.at[index, 'marketDaysToExpiration'] = 1 + np.busday_count(np.datetime64('today', 'D'),
                                                                            option_chain['expirationDate'][index],
                                                                            weekmask='1111100',
                                                                            holidays=market_holidays).astype(int)

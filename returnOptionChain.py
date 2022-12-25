@@ -13,7 +13,7 @@ warnings.filterwarnings('ignore')
 def calls_return(i, option_chain_calls, volatility, daily_growth_rate, today, dividend_date, dividend_pay, dividend_spacing):
     print('call ' + str(i))
     option_chain_calls = option_chain_calls[option_chain_calls.index == i]
-    option_chain_calls['risk'], option_chain_calls['irr'], option_chain_calls['annualized_volatility'], option_chain_calls['expected_trade_days'], option_chain_calls['max_dividend'], option_chain_calls['dividend_count'] = exp.buy_write(
+    option_chain_calls['risk'], option_chain_calls['irr'], option_chain_calls['annualized_volatility'], option_chain_calls['expected_trade_days'], option_chain_calls['expected_dividend'], option_chain_calls['max_dividend'], option_chain_calls['dividend_count'], option_chain_calls['div_info'], option_chain_calls['theta_rate'] = exp.buy_write(
         option_chain_calls['underlyingPrice'][i],
         option_chain_calls['assumedFill'][i],
         option_chain_calls['strikePrice'][i],
@@ -23,7 +23,11 @@ def calls_return(i, option_chain_calls, volatility, daily_growth_rate, today, di
         today,
         dividend_date,
         dividend_pay,
-        dividend_spacing)
+        dividend_spacing,
+        option_chain_calls['delta'][i],
+        option_chain_calls['gamma'][i],
+        option_chain_calls['theta'][i],
+        option_chain_calls['vega'][i])
 
     return option_chain_calls
 
@@ -92,7 +96,7 @@ def main(symbol, yearly_growth_rate, risk_free_rate):
     #         expiration_prices.append(scaled_change)
     #
     #     unique_days_to_expiration.at[index, 'expiration_prices'] = expiration_prices
-
+    option_chain = option_chain[option_chain['marketDaysToExpiration'] > 1]
     option_chain_calls = option_chain[option_chain['putCall'] == 'CALL'].reset_index()
     # option_chain_puts = option_chain[option_chain['putCall'] == 'PUT'].reset_index()
 
@@ -131,11 +135,12 @@ def main(symbol, yearly_growth_rate, risk_free_rate):
     option_chain['underlying_annualized_sharpe_ratio'] = (option_chain['underlying_irr'] - risk_free_rate) / option_chain['underlying_annualized_volatility']
 
 # ADD COST BASIS
-    option_chain.to_csv(symbol + '2_returns.csv')
+    option_chain.to_csv(symbol + 'returns.csv')
 
     print('---DONE---')
 
 
 if __name__ == '__main__':
-    main('TOL', .15, 0.037936)
+    # main('symbol', yearly_growth_rate, risk_free_rate)
+    main('EPD', .05, 0.041008)
 
