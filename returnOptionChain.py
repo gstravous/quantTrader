@@ -142,5 +142,5 @@ def main(symbol, yearly_growth_rate, risk_free_rate):
 
 if __name__ == '__main__':
     # main('symbol', yearly_growth_rate, risk_free_rate)
-    main('EPD', .05, 0.041008)
+    main('BMY', .1, 0.041008)
 

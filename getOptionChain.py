@@ -17,7 +17,6 @@ def get_raw_contracts(symbol):
     raw = pd.json_normalize(requests.get(url=options_endpoint, params=options_payload).json())  # get raw option data
 
     price = raw['underlyingPrice'][0]  # gets underlying stock price
-    price = 23.95
 
     # Remove all columns related to the underlying stock, leaving only cells containing tables of each contract
     del raw['symbol']
